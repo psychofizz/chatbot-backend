@@ -1,0 +1,59 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS Trash
+.Trashes
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.env
+*.env.*
+
+# Django
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# Docker
+*.pid
+*.seed
+*.bak
+*.swp
+docker-compose.override.yml
+
+# VSCode
+.vscode/
+
+# System files
+Thumbs.db
+ehthumbs.db
+Icon?
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Coverage reports
+htmlcov/
+.coverage
+.tox/
+.nox/
+.cache/
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+.pyre/
