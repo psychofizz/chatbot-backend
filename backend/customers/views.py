@@ -31,19 +31,34 @@ def customer_list_create(request):
             return JsonResponse(form.errors, status=400)
     return HttpResponse(status=405) 
 
-@csrf_exempt 
-def customer_detail_update_delete(request, pk):
+@csrf_exempt
+def customer_detail_update_delete(request, identity_card_number):
     """
-    For viewing, updating, or deleting a specific customer by ID
+    For viewing, updating, or deleting a specific customer by identity_card_number.
     """
-    customer = get_object_or_404(Customer, pk=pk)
+    try:
+        customer = Customer.objects.get(identity_card_number=identity_card_number)
+    except Customer.DoesNotExist:
+        return JsonResponse(
+            {'error': f'Customer with identity card number "{identity_card_number}" not found.'},
+            status=200
+        )
+    except Customer.MultipleObjectsReturned:
+        # Hemos encontrado varias cuentas asociadas a ese DNI.
+        return JsonResponse(
+            {'error': f'Error: Multiple customers found with identity card number "{identity_card_number}". Please check data integrity.'},
+            status=200
+        )
 
     if request.method == 'GET':
         return JsonResponse(model_to_dict(customer))
 
     elif request.method == 'PUT':
         data = parse_json_body(request)
-        form = CustomerForm(data, instance=customer)
+        if data is None:
+            return JsonResponse({'error': 'Invalid JSON data in request body.'}, status=400)
+
+        form = CustomerForm(data, instance=customer) # Ensure CustomerForm is defined and imported
         if form.is_valid():
             customer = form.save()
             return JsonResponse(model_to_dict(customer))
@@ -51,7 +66,12 @@ def customer_detail_update_delete(request, pk):
             return JsonResponse(form.errors, status=400)
 
     elif request.method == 'DELETE':
+        customer_id_for_message = customer.identity_card_number
         customer.delete()
-        return JsonResponse({'message': 'Customer deleted successfully'}, status=204)
-    return HttpResponse(status=405) 
+        return JsonResponse(
+            {'message': f'Customer with identity card number "{customer_id_for_message}" deleted successfully.'},
+            status=200
+        )
 
+    # If method is not GET, PUT, or DELETE
+    return JsonResponse({'error': f'Method {request.method} not allowed for this resource.'}, status=405)
