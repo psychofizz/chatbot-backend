@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Customer
+from django.forms.models import model_to_dict
 
 def parse_json_body(request):
     try:
@@ -35,6 +36,7 @@ def customer_detail_update_delete(request, identity_card_number):
     For viewing, updating, or deleting a specific customer by identity_card_number.
     """
     try:
+        identity_card_number = identity_card_number.replace('"', '').replace("'", '') # The ai seems to send them with quotes, i could write soemthing more robust but thats for later
         customer = Customer.objects.get(identity_card_number=identity_card_number)
     except Customer.DoesNotExist:
         return JsonResponse(
