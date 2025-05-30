@@ -25,6 +25,11 @@ class Customer(models.Model):
         verbose_name="Number of Identity Card",
         help_text="Honduran identity card number (e.g., 0801-1999-00001) but like without hyphens"
     )
+    verified = models.BooleanField(
+        default=False,
+        verbose_name="Verified",
+        help_text="Indicates whether the customer's identity has been verified."
+    )
 
     class Meta:
         """

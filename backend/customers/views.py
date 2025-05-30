@@ -2,9 +2,7 @@ import json
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.forms.models import model_to_dict #
 from .models import Customer
-from .forms import CustomerForm
 
 def parse_json_body(request):
     try:
@@ -58,7 +56,7 @@ def customer_detail_update_delete(request, identity_card_number):
         if data is None:
             return JsonResponse({'error': 'Invalid JSON data in request body.'}, status=400)
 
-        form = CustomerForm(data, instance=customer) # Ensure CustomerForm is defined and imported
+        form = CustomerForm(data, instance=customer) 
         if form.is_valid():
             customer = form.save()
             return JsonResponse(model_to_dict(customer))
